@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Segview Solar - Simulador de Economia</title>
+    <title>Segview Solar - Energia por Assinatura</title>
     <style>
         :root {
             --bg-color: #000000;
@@ -23,7 +23,6 @@
         h1 { text-align: center; color: var(--segview-green); font-size: 22px; line-height: 1.2; }
         .subtitle { text-align: center; color: var(--segview-gray); font-size: 14px; margin-bottom: 5px; }
 
-        /* --- LISTA DE BENEFÍCIOS (TELA 1) --- */
         .benefits-list {
             background: rgba(255,255,255,0.03);
             border-radius: 12px;
@@ -69,7 +68,7 @@
         <img src="logo-segview.png" alt="Logo Segview Solar" class="app-logo">
 
         <div id="screen-1" class="screen active">
-            <h1>Economia Solar por Assinatura ☀️</h1>
+            <h1>Energia Solar por Assinatura ☀️</h1>
             <p class="subtitle">Pague menos na sua conta de luz, sem precisar instalar painéis.</p>
             
             <ul class="benefits-list">
@@ -176,7 +175,7 @@
         function sendWhatsApp() {
             const fone = '5521992279491';
             const valAnual = userData.economiaAnual.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-            const msg = `Olá! Sou ${userData.nome} e simulei minha economia por assinatura na Segview Solar. ☀️ Vi que posso economizar cerca de ${valAnual}/ano na conta da ${userData.distribuidora}! Gostaria de validar meu desconto.`;
+            const msg = `Olá! Sou ${userData.nome} e simulei minha energia por assinatura na Segview Solar. ☀️ Vi que posso economizar cerca de ${valAnual}/ano na conta da ${userData.distribuidora}! Gostaria de validar meu desconto.`;
             window.open(`https://wa.me/${fone}?text=${encodeURIComponent(msg)}`, '_blank');
             setTimeout(() => { goToScreen(4); }, 600);
         }
