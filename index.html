@@ -23,21 +23,8 @@
         h1 { text-align: center; color: var(--segview-green); font-size: 22px; line-height: 1.2; }
         .subtitle { text-align: center; color: var(--segview-gray); font-size: 14px; margin-bottom: 5px; }
 
-        .benefits-list {
-            background: rgba(255,255,255,0.03);
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 5px;
-            list-style: none;
-        }
-        .benefits-list li {
-            font-size: 13px;
-            color: #ccc;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+        .benefits-list { background: rgba(255,255,255,0.03); border-radius: 12px; padding: 15px; margin-bottom: 5px; list-style: none; }
+        .benefits-list li { font-size: 13px; color: #ccc; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
         .benefits-list li:last-child { margin-bottom: 0; }
         .benefits-list li b { color: var(--segview-green); }
         .check-icon { color: var(--segview-blue); font-weight: bold; }
@@ -55,7 +42,10 @@
         .result-value { color: var(--segview-green); font-weight: bold; }
         .highlight-box { text-align: center; padding: 20px; border-radius: 15px; background: rgba(0, 174, 239, 0.08); border: 1px solid var(--segview-blue); }
         .big-value { color: var(--segview-green); font-size: 28px; font-weight: bold; margin-top: 5px; }
-        .disclaimer-text { font-size: 11px; color: var(--segview-gray); text-align: center; line-height: 1.4; margin-top: -5px; }
+
+        /* Disclaimer atualizado com o texto da imagem */
+        .disclaimer-text { font-size: 10px; color: var(--segview-gray); text-align: center; line-height: 1.4; margin-top: -5px; padding: 0 10px; font-style: italic; }
+        
         .success-icon { font-size: 60px; color: var(--segview-green); text-align: center; }
         .thanks-text { text-align: center; line-height: 1.5; color: var(--segview-gray); font-size: 15px; }
         .insta-btn { background: transparent; border: 1px solid var(--segview-blue); color: var(--segview-blue); margin-top: 10px; }
@@ -64,19 +54,16 @@
 <body>
 
     <div id="app-container">
-        
         <img src="logo-segview.png" alt="Logo Segview Solar" class="app-logo">
 
         <div id="screen-1" class="screen active">
             <h1>Energia Solar por Assinatura ☀️</h1>
             <p class="subtitle">Pague menos na sua conta de luz, sem precisar instalar painéis.</p>
-            
             <ul class="benefits-list">
                 <li><span class="check-icon">✓</span> <b>Zero Investimento:</b> Sem compra de placas.</li>
                 <li><span class="check-icon">✓</span> <b>Sem Obras:</b> Nada de furos no telhado.</li>
                 <li><span class="check-icon">✓</span> <b>Desconto Real:</b> Economia imediata na fatura.</li>
             </ul>
-
             <input type="text" id="nome" placeholder="Seu Nome Completo">
             <input type="tel" id="whatsapp" placeholder="Seu WhatsApp (21) 99999-9999">
             <button onclick="goToScreen(2)">Começar Simulação</button>
@@ -107,9 +94,12 @@
                 <p style="font-size: 14px; color: var(--segview-gray);">Sua economia anual estimada:</p>
                 <div class="big-value" id="res-destaque"></div>
             </div>
+            
             <p class="disclaimer-text">
-                Estimativa baseada na parcela compensável da fatura (exclui taxa mínima e TIP).
+                *O desconto apresentado será aplicado somente sobre a parcela compensável da tarifa.<br>
+                *Os valores apresentados são estimativas e podem variar conforme consumo, tarifas, impostos e condições da distribuidora.
             </p>
+
             <button onclick="sendWhatsApp()" style="background: #25D366; color: #fff;">Garantir Desconto via WhatsApp</button>
             <button onclick="goToScreen(1)" style="background: transparent; color: #888; text-transform: none;">Refazer Simulação</button>
         </div>
@@ -119,7 +109,7 @@
             <h1>Quase lá!</h1>
             <div class="thanks-text">
                 <p><strong><span id="thanks-name"></span></strong>, recebemos sua simulação!</p>
-                <p>Nossa equipe técnica analisará sua fatura para validar o desconto de 14%.</p>
+                <p>Nossa equipe técnica analisará sua fatura para validar seu desconto.</p>
             </div>
             <button class="insta-btn" onclick="window.open('https://instagram.com/segviewsolar', '_blank')">Acompanhe a Segview Solar</button>
             <button onclick="location.reload()" style="background: transparent; color: #555; font-size: 12px; border: none; text-transform: none;">Voltar ao início</button>
@@ -145,22 +135,21 @@
             const nome = document.getElementById('nome').value;
             const zap = document.getElementById('whatsapp').value;
             const v = parseFloat(document.getElementById('valorConta').value);
+            const dist = document.getElementById('distribuidora').value;
 
-            if (!nome || zap.length < 14) { alert('Por favor, preencha seu nome e WhatsApp primeiro.'); goToScreen(1); return; }
-            if (isNaN(v) || v < 400) { 
-                alert('A Segview Solar atende contas a partir de R$ 400,00. Clique no botão de voltar e nos chame no WhatsApp para analisarmos seu caso!'); 
-                return; 
-            }
+            if (!nome || zap.length < 14) { alert('Preencha seu nome e WhatsApp primeiro.'); goToScreen(1); return; }
+            if (isNaN(v) || v < 400) { alert('Atendemos contas a partir de R$ 400,00.'); return; }
 
-            userData.nome = nome;
-            userData.whatsapp = zap;
-            userData.distribuidora = document.getElementById('distribuidora').value;
-            userData.valorConta = v;
+            userData.nome = nome; userData.whatsapp = zap; userData.distribuidora = dist; userData.valorConta = v;
 
-            const baseCompensavel = v * 0.7745;
+            // Fatores de eficiência baseados na distribuidora
+            let fEnergia = (dist === "LIGHT") ? 0.7745 : 0.70675;
+            let fCO2 = (dist === "LIGHT") ? 0.8911 : 0.8686;
+
+            const baseCompensavel = v * fEnergia;
             userData.economiaMensal = baseCompensavel * 0.14;
             userData.economiaAnual = userData.economiaMensal * 12;
-            userData.co2Poupado = userData.economiaAnual * 0.8911;
+            userData.co2Poupado = userData.economiaAnual * fCO2;
 
             const fmt = (val) => val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
             document.getElementById('res-mensal').textContent = fmt(userData.economiaMensal);
